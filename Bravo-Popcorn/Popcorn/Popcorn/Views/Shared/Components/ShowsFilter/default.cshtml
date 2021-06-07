@@ -1,0 +1,145 @@
+﻿@model FilterModel
+@using Microsoft.AspNetCore.Http
+@using Popcorn.Models;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var helleantizi = HttpContextAccessor.HttpContext.Session.GetString("city");
+    var data = ViewBag.FilterSearch;
+}
+
+<br />
+<br />
+<div class="container" style="
+                                background:rgba(56,255,255,0.1);
+                                border-radius: 0 0 0 5px;
+                                padding:20px;
+                                border:1px solid #808080">
+    <form method="post">
+        <div class="row">
+            <div class="col-sm">
+            @{
+                DateTime selectedDate = DateTime.Parse(data.DateOfShow);
+                DateTime StartDate = DateTime.Now;
+                int daysForward = 5;             
+
+                <p class="m-1"><strong>Select day:</strong></p>
+                <select name="dateOfShow" onchange="this.form.submit()" style="width:100%;">
+
+                    @for (int i = 0; i < daysForward; i++)
+                    {
+                        string today = i == 0 ? "(today)" : "";
+
+                        @if (selectedDate.ToString("yyyy-MM-dd") == StartDate.AddDays(i).ToString("yyyy-MM-dd"))
+                        {
+                            <option value="@StartDate.AddDays(i)" selected>@StartDate.AddDays(i).DayOfWeek @today</option>
+
+                        }
+                        else
+                        {
+                            <option value="@StartDate.AddDays(i)">@StartDate.AddDays(i).DayOfWeek @today</option>
+                        }
+                    }
+                </select>
+            }
+            </div>
+
+                <div class="col-sm">
+                    <p class="m-1"><strong>Cinemas in @helleantizi:</strong></p>
+                    <select name="searchCinema" onchange="this.form.submit()" style="width:100%;">
+                        <option value="">Show all cinemas</option>
+                        @foreach (var cinema in Model.AllCinemas)
+                        {
+                            if (data.GetCinema == cinema.name)
+                            {
+                                <option value="@cinema.name" selected>@cinema.name</option>
+                            }
+                            else
+                            {
+                                <option value="@cinema.name">@cinema.name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-sm">
+                    <p class="m-1"><strong>Movie:</strong></p>
+                    <select name="searchMovie" onchange="this.form.submit()" style="width:100%;">
+                        <option value="">Show all movies</option>
+                        @foreach (var movie in Model.AllMovies)
+                        {
+                            if (data.GetMovie == movie.Title)
+                            {
+                                <option value="@movie.Title" selected>@movie.Title</option>
+                            }
+                            else
+                            {
+                                <option value="@movie.Title">@movie.Title</option>
+                            }
+
+                        }
+                    </select>
+                </div>
+                <div class="col-sm">
+                    <p class="m-1"><strong>Genre:</strong></p>
+                    <select name="searchGenre" onchange="this.form.submit()" style="width:100%;">
+                        <option value="">Show all genres</option>
+                        @foreach (var genre in Model.AllGenres)
+                        {
+                            if (data.GetGenre == genre.Description)
+                            {
+                                <option value="@genre.Description" selected>@genre.Description</option>
+                            }
+                            else
+                            {
+                                <option value="@genre.Description">@genre.Description</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+</form>
+</div>
+
+
+
+<p>
+    @if (@data.GetCinema != null || @data.GetMovie != null || @data.GetGenre != null)
+    {
+        <text>
+            <a class="btn btn-warning mt-2">Filters On:</a>
+        </text>
+    }
+
+
+    @if (@data.GetCinema != null)
+    {
+        <text>
+            <a class="btn btn-primary mt-2">@data.GetCinema</a>
+        </text>
+    }
+
+    @if (@data.GetMovie != null)
+    {
+        <text>
+            <a class="btn btn-primary mt-2">@data.GetMovie</a>
+        </text>
+    }
+
+    @if (@data.GetGenre != null)
+    {
+        <text>
+            <a class="btn btn-primary mt-2">@data.GetGenre</a>
+        </text>
+    }
+</p>
+
+
+@await Component.InvokeAsync("ShowsList", new { location = helleantizi,
+                                                dateOfShow = data.DateOfShow,
+                                                searchCinema = data.GetCinema,
+                                                searchMovie = data.GetMovie,
+                                                searchGenre = data.GetGenre
+                                                })
+
+
+

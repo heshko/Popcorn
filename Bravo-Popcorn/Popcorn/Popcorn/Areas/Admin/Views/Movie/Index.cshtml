@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Popcorn.Models.MovieModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MoviePoster)
+            </th>
+            <th>
+                About
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img src="@item.MoviePoster" class="img-thumbnail" style="width:120px;" />
+            </td>
+            <td>
+                <h6>@Html.DisplayFor(modelItem => item.Title)</h6>
+                @Html.DisplayFor(modelItem => item.Description)
+
+                <br />
+                <br /><strong>Director:</strong> @Html.DisplayFor(modelItem => item.Director)
+                <br /><strong>Actors:</strong> @Html.DisplayFor(modelItem => item.Actors)
+            </td>
+            <td>
+                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+            <td>
+                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

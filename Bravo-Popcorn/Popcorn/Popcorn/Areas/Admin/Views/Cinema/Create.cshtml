@@ -1,0 +1,51 @@
+﻿@model Popcorn.Models.CinemaModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>CinemaModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="cityId" class="control-label"></label>
+                <select asp-for="cityId"
+                        asp-items="ViewBag.CityList"
+                        class="form-control">
+                </select>
+                <span asp-validation-for="cityId"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="street" class="control-label"></label>
+                <input asp-for="street" class="form-control" />
+                <span asp-validation-for="street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="zipcode" class="control-label"></label>
+                <input asp-for="zipcode" class="form-control" />
+                <span asp-validation-for="zipcode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

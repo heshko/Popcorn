@@ -1,0 +1,139 @@
+﻿@using Popcorn.Data
+@using Microsoft.AspNetCore.Http
+@inject ApplicationDbContext _context
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en" class="mainPage">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Popcorn</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://kit.fontawesome.com/c52f38af62.js" crossorigin="anonymous" DEFER></script>
+    <link href="https://fonts.googleapis.com/css?family=Barlow+Condensed|Righteous&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    @{
+        var helleantizi = HttpContextAccessor.HttpContext.Session.GetString("city");
+    }
+    @if (helleantizi == null)
+    {
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Select City</h2>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post">
+                        <ul class="mt-4">
+                            @{
+                                string checkedValue = "checked";
+                                var popUpCities = _context.Cities.ToList();
+                                foreach (var city in popUpCities)
+                                {
+                                    <li><input type="radio" value="@city.name" name="city" @checkedValue><label>@city.name</label> </li><br />
+                                    checkedValue = null;
+                                }
+                            }
+                        </ul>
+                        <button type="submit" class="btn-danger mb-4 mr-4 float-right">Select City</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    }
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light navbarStyle">
+            <div class="container">
+                <a class="titleHeader" href="/Home/Index">Popcorn</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/Home/Index">Home <span class="sr-only">(current)</span></a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="/Movie/Movies" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Movies
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/Movie/Movies">All Movies</a>
+                                <a class="dropdown-item" href="/Movie/Genres">Movies by Genre</a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="/Movie/Movies" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (helleantizi == null) {<text>Location</text>}
+                                else { <text>@helleantizi</text> }
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <form method="post" asp-action="Index" asp-controller="Home" asp-area="">
+                                    @{
+                                        var cities = _context.Cities.ToList();
+
+                                        @foreach (var city in cities)
+                                        {
+                                            if (city.name != helleantizi)
+                                            {
+                                            <div class="pl-3 pb-2">
+                                                <button type="submit" 
+                                                        class="text-dark btn-link" 
+                                                        name="city" 
+                                                        value="@city.name"
+                                                        id="location"
+                                                        onchange="form.submit()"
+                                                        >
+                                                    @city.name
+                                                </button>
+                                            </div>
+                                            }
+                                        }
+                                    }
+                                </form>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <partial name="_LoginPartial" />
+                    <form asp-controller="Search" asp-action="Index" asp-area="" class="form-inline" method="get">
+                        <input class="form-control mr-sm-2" name="search" type="text" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-light my-2 my-sm-0" style="color:gray" type="submit"><i class="fas fa-search" style="color:gray"></i></button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+            
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div style="text-align:center;">
+            <em>&copy; 2020 - Popcorn Cinema</em>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+    @RenderSection("stripe", required: false)
+</body>
+</html>
+

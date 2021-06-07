@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Popcorn.Models.TicketModel>
+@{
+    ViewData["Title"] = "Index";
+}
+<h1>Tickets</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SelectedRow)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SelectedCol)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TicketsStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TicketHoldExpires)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TicketNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Shows)
+            </th>
+            <th>
+                Saloon
+            </th>
+            <th>
+                Cinema
+            </th>
+            <th>
+                City
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SelectedRow)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SelectedCol)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketsStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketHoldExpires)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shows.movie.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shows.saloon.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shows.cinema.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shows.cinema.city.name)
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Index" asp-controller="Customer">Back to Customer list</a>
+

@@ -1,0 +1,238 @@
+﻿@model TicketViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Movies";
+    var getActiveDate = ViewBag.FilterSearch;
+
+
+    int allSeats = Model.Show.saloon.Rows * Model.Show.saloon.Columns;
+    int reservedSeats = Model.Ticket.Count();
+    int freeSeats = allSeats - reservedSeats;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm mb-3">
+            <form method="post" action="/Booking/Confirm/">
+                <div class="p-2 movieScreen">
+                    Screen
+                </div>
+
+                <br />
+                <div class="text-center">
+
+                    <input type="hidden" name="id" value="@Model.Show.id" />
+                    <input type="hidden" name="dateOfShow" value="@getActiveDate.DateOfShow" />
+
+                    @for (int i = 1; i <= Model.Show.saloon.Rows; i++)
+                    {
+                        <div class="m-3 p-1">
+
+                            @for (int j = 1; j <= Model.Show.saloon.Columns; j++)
+                            { 
+                            int data = Model.Ticket.Count(item => item.SelectedRow == i && item.SelectedCol == j);
+                            
+                                <div class="d-inline">
+                                    @if (data == 0)
+                                    {
+                                        <label class="containerSeats">
+                                            <input type="checkbox"
+                                                   name="Ticket"
+                                                   value="@i @j"
+                                                   id="checkme"
+                                                   onclick="toggleTicket(@i, @j)">
+
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <label class="containerSeats">
+                                            <input type="checkbox" disabled>
+                                            <span class="checkmark" style="background-color:red;"></span>
+                                        </label>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                <br />
+
+                @{
+                    if (User.Identity.Name != null)
+                    {
+                        var user = await UserManager.FindByEmailAsync(User.Identity.Name);
+
+                        <p class="pl-3" style="border-top: 1px solid #8d8d8d;padding-top:20px;">
+                        <p>
+                            <strong>Selected day:</strong> @getActiveDate.DateOfShow <br />
+                            <strong>Seats: <span id="showFreeSeats" style="color:lawngreen;">@freeSeats</span> / @allSeats </strong><br />
+                            <strong>Total Price: <span id="totalPrice" style="color:lawngreen;">0:-</span><span id="totalTickets" style="color:#8d8d8d;"></span></strong>
+                        </p>
+
+                            @for (int i = 1; i <= Model.Show.saloon.Rows; i++)
+                            {
+                                @for (int j = 1; j <= Model.Show.saloon.Columns; j++)
+                                {
+                                    <p id="@i @j" style="display:none;">
+                                        <i class="fas fa-ticket-alt" style="color:orange;"></i>
+                                        Ticket, Row @i Col @j
+                                    </p>
+                                }
+                            }
+                            </p>
+
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+                            <script>
+                            $(function () {
+                                $("input[type='checkBox']").change(function () {
+                                    var toggleSeat = @freeSeats;
+                                    var len = $("input[type='checkBox']:checked").length;
+                                    if (len == 0) {
+                                        $("input[type='submit']").prop("disabled", true);
+                                        $("input[type='submit']").attr("value", "Selects Seat");
+                                        $('#totalPrice').text(len * @Model.Show.Price);
+                                        $('#totalTickets').text("");
+                                        $('#showFreeSeats').text(toggleSeat);
+                                        $('#totalTicketShow').text(toggleSeat);
+                                    }
+                                    else if (len > 0) {
+
+                                        $("input[type='submit']").removeAttr("disabled");
+                                        $("input[type='submit']").attr("value", "Continue Booking");
+                                        $('#showFreeSeats').text(toggleSeat - len);
+                                        $('#totalTicketShow').text(toggleSeat - len);
+                                        $('#totalPrice').text(len * @Model.Show.Price);
+                                        $('#totalTickets').text(" (" + len + " tickets)");
+                                    }
+
+                                    else {
+
+                                        $('#showFreeSeats').text(toggleSeat + len);
+                                        $('#totalTicketShow').text(toggleSeat + len);
+                                        $('#totalPrice').text(len * @Model.Show.Price);
+                                        $('#totalTickets').text(len);
+                                    }
+
+                                });
+                                $("input[type='checkBox']").trigger('change');
+                            });
+
+
+                            function toggleTicket(i, j) {
+                                var x = document.getElementById(i + " " + j);
+                                if (x.style.display === "none") {
+                                    x.style.display = "block";
+                                } else {
+                                    x.style.display = "none";
+                                }
+                            }
+
+                            </script>
+
+                            <div style="float:right;">
+                                <input type="submit" value="Continue Booking" class="btn btn-danger" id="submit_button" disabled />
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="pl-3" style="border-top: 1px solid #8d8d8d;padding-top:20px;">
+                                To be able to book tickets you hav to login to your account.<br />
+                                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-danger mt-2">Login</a>
+                            </p>
+                        }
+                }
+
+            </form>
+        </div>
+
+
+        <div class="col-sm">
+            <div class="p-2" style="background-color:#000;
+                        -webkit-box-shadow: -1px 1px 5px 4px rgba(0,0,0,1);
+                        -moz-box-shadow: -1px 1px 5px 4px rgba(0,0,0,1);
+                        box-shadow: -1px 1px 5px 4px rgba(0,0,0,1);
+                        ">
+                <div class="p-4" style="
+                        background-color:#000;
+                        color:#FFF;
+                        border-top:dashed white 10px;
+                        border-bottom:dashed white 10px;
+                        ">
+                    <div class="row">
+                        <div class="col-3 bigImage">
+                            <a href="/Movie/MovieDetails/@Model.Show.movie.Id">
+                                <img src="@Model.Show.movie.MoviePoster" alt="@Model.Show.movie.Title" class="img-fluid img-thumbnail boxShadow" style="width:110px; float:right;">
+                            </a>
+                        </div>
+                        <div class="col-9">
+                            <h5>@Model.Show.movie.Title</h5>
+                            @if (Model.Show.movie.GenresInMovies.Count > 0)
+                            {
+                                int maxItem = Model.Show.movie.GenresInMovies.Count;
+                                int currentItem = 0;
+
+                                <i class="far fa-folder" style="color:#8d8d8d;"></i>
+
+                                foreach (var genre in Model.Show.movie.GenresInMovies)
+                                {
+                                    currentItem++;
+                                    <a href="@Url.Action("Genres","Movie")#@genre.GenreModel.Description">
+                                        @genre.GenreModel.Description
+                                    </a>
+
+                                    if (maxItem > currentItem)
+                                    {
+                                        <text>, </text>
+                                    }
+                                }
+                                
+                                <span>&nbsp; <i class="far fa-clock" style="color:#8d8d8d;"></i>  @Model.Show.movie.PlayTimeLength.Hours:@Model.Show.movie.PlayTimeLength.Minutes h</span>
+                                <br /><br />
+                            }
+
+                            <p><em>@Model.Show.movie.Description</em></p><br />
+                        </div>
+                    </div>
+                                
+                <div class="row">
+                    <div class="col-3 text-center">
+                        <i class="fas fa-calendar-alt" style="color:orange;"></i><br />
+                        <h4 style="color:#fff;">@Model.Show.date.Day/@Model.Show.date.Month</h4>
+                    </div>
+                    <div class="col-3 text-center">
+                        <i class="far fa-clock" style="color:orange;"></i><br />
+                        <h4 style="color:#fff;">@Model.Show.date.Hour:@Model.Show.date.Minute</h4>
+                    </div>
+                    <div class="col-3 text-center">
+                        <i class="far fa-money-bill-alt" style="color:orange;"></i><br />
+                        <h4 style="color:#fff;">@Model.Show.Price:-</h4>
+                    </div>
+                    <div class="col-3 text-center">
+                        <i class="fas fa-ticket-alt" style="color:orange;"></i>
+                        <h4 style="color:#fff;"><span id="totalTicketShow" style="color:greenyellow;">@freeSeats</span>/@allSeats</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <br />
+            <br />
+            <h3>Select seats:</h3>
+            <p>
+                At the illustration of the Saloon and the seats, click on prefered seats to select them.<br />
+                When you are comfertable with your selections click the Continue button.<br />
+            </p>
+
+            <br />
+            <h3>More about the Saloon</h3>
+            <p>
+                The saloon <em>@Model.Show.saloon.Name</em> is located in <em>@Model.Show.cinema.name</em> and in the city <em>@Model.Show.cinema.city.name</em>.
+                The saloon has <em>@Model.Show.saloon.Rows</em> rows, <em>@Model.Show.saloon.Columns</em> cols and a total of <em>@allSeats</em> seats.
+            </p>
+        </div>
+    </div>
+</div>

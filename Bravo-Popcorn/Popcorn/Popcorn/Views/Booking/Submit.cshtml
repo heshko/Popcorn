@@ -1,0 +1,57 @@
+﻿@model List<TicketModel>
+@using Popcorn.Areas.Identity.Models;
+@{
+    ViewData["Title"] = "Movies";
+    string message = "";
+    int price = 0;
+    Customer customer = new Customer();
+}
+
+<h1>Your booking is complete</h1>
+
+<div class="container">
+    <div class="row d-flex flex-nowrap">
+        <div class="col-sm order-1">
+
+            @foreach (var item in @Model)
+            {
+                <div class="alert alert-warning mb-3" style="border-top: dotted 7px black; border-bottom: dotted 7px black;">
+
+                    <h4>@item.Shows.movie.Title</h4>
+
+                    <p class="text-dark">
+                        <strong>Saloon:</strong> @item.Shows.saloon.Name - @item.Shows.cinema.name @item.Shows.cinema.city.name <br />
+                        <strong>Show starts:</strong> @item.Shows.date <br />
+                        <strong>Row:</strong> @item.SelectedRow <br />
+                        <strong>Seat:</strong> @item.SelectedCol <br />
+                        <strong>Price:</strong> @item.Shows.Price:- <br />
+                    </p>
+                </div>
+
+                if (item.TicketsStatus == "Paid")
+                {
+                    message = "Your tickets have been paid and you can collect them at the cinema";
+                }
+                else
+                {
+                    message = "Your tickets are reserved and you need to collect and pay for them at the cinema at least 1 hour before the show starts";
+                }
+
+                price = item.Shows.Price;
+                customer = item.Customer;
+            }
+        </div>
+
+        <div class="col-sm pt-1">
+            <p>A confirmation has been sent to <strong>@customer.Email</strong></p>
+            <p>@message</p>
+            <p><strong>Total cost:</strong> @(price * Model.Count) SEK</p>
+            <br />
+            <div style="margin-left: -10px;">
+                <a href="~/Identity/Account/Manage/BookingDetails" class="btn btn-danger ml-1">Manage Your Tickets</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+

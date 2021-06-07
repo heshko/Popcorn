@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Popcorn.Areas.Identity.Models
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject UserManager<Customer> _UserManager
+
+
+
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            @{ 
+                var customer = _UserManager.GetUserAsync(User).Result;
+                var customerName = customer.firstName + " " + customer.lastName;
+            }
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@customerName</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+
+                <button type="submit" class="nav-link btn btn-link"><i class="fas fa-times-circle"></i> Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
+                <span class="fa-stack">
+                    <i class="fa fa-circle-thin fa-stack-2x" style="color:#fff;"></i>
+                    <i class="far fa-user fa-stack-1x " style="color:#fff;"></i>
+                </span> Login
+            </a>
+        </li>
+    }
+</ul>
+

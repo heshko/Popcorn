@@ -1,0 +1,57 @@
+﻿@model Popcorn.Models.ShowModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>ShowModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <div class="form-group">
+                <label asp-for="date" class="control-label"></label>
+                <input asp-for="date" class="form-control" />
+                <span asp-validation-for="date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExpireShowDate" class="control-label"></label>
+                <input asp-for="ExpireShowDate" class="form-control" />
+                <span asp-validation-for="ExpireShowDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="movieId" class="control-label"></label>
+                <select asp-for="movieId" class="form-control" asp-items="ViewBag.movieId"></select>
+                <span asp-validation-for="movieId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="cinemaId" class="control-label"></label>
+                <select asp-for="cinemaId" class="form-control" asp-items="ViewBag.cinemaId"></select>
+                <span asp-validation-for="cinemaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="saloonId" class="control-label"></label>
+                <select asp-for="saloonId" class="form-control" asp-items="ViewBag.saloonId"></select>
+                <span asp-validation-for="saloonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

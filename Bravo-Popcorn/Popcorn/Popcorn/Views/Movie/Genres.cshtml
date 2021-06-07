@@ -1,0 +1,35 @@
+﻿@model List<GenreModel>
+@{
+    ViewData["Title"] = "Movies";
+}
+
+@foreach (var genre in Model)
+{
+    if (genre.MoviesInGenres.Count() > 0)
+    {
+        <h2 id="@genre.Description">@genre.Description</h2>
+        <div class="container">
+            <div class="row">
+                @foreach (var movies in genre.MoviesInGenres)
+                {
+                <div class="col-6 col-md-2">
+                    <div class="overlayContainer movie">
+                        <a href="/Movie/MovieDetails/@movies.MovieModel.Id">
+                            <img src="@movies.MovieModel.MoviePoster" alt="@movies.MovieModel.Title" class="img-fluid img-thumbnail">
+                        </a>
+                        @if (@movies.MovieModel.ReleaseDate > DateTime.Now)
+                        {
+                            <div class="overlay">
+                                Release: @movies.MovieModel.ReleaseDate.ToString("dd")/@movies.MovieModel.ReleaseDate.ToString("MM")
+                            </div>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+
+        <br />
+        <br />
+    }
+}

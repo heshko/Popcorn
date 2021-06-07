@@ -1,0 +1,545 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+#card-element { /*Stripe card element*/
+    box-sizing: border-box;
+    height: 40px;
+    padding: 10px 12px;
+    margin: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: #000;
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+}
+
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f00' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+}
+
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f00' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Barlow Condensed', sans-serif;
+    color: #fc0303;
+}
+
+.boxShadow {
+    -webkit-box-shadow: 0px 0px 30px -12px rgba(0,0,0,1);
+    -moz-box-shadow: 0px 0px 30px -12px rgba(0,0,0,1);
+    box-shadow: 0px 0px 30px -12px rgba(0,0,0,1);
+}
+
+
+.movieScreen {
+    background-color: #000;
+    text-align: center;
+    font-family: Consolas;
+    font-size: 10px;
+    color: #fff;
+    -webkit-box-shadow: 0px 11px 13px -4px rgba(255,255,255,1);
+    -moz-box-shadow: 0px 11px 13px -4px rgba(255,255,255,1);
+    box-shadow: 0px 11px 13px -4px rgba(255,255,255,1);
+}
+
+
+.movie img {
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.containerSeats {
+    display: inline-block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.containerSeats input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 4px 4px 25px 25px;
+}
+
+/* On mouse-over, add a grey background color */
+.containerSeats:hover input ~ .checkmark {
+    background-color: orange;
+}
+
+/* When the checkbox is checked, add a blue background */
+.containerSeats input:checked ~ .checkmark {
+    background-color: orange;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.containerSeats input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.containerSeats .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+.overlayContainer {
+    position: relative;
+    display: flex;
+    opacity: 0.6;
+    transition: all .2s ease-in-out;
+    width:100%;
+    height:80%;
+}
+
+
+.overlayContainer:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    box-sizing: border-box;
+    box-shadow: 0 0 3px rgba(0,0,0,0.6);
+    -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+
+.bigImage {
+    position: relative;
+    display: flex;
+    transition: all .2s ease-in-out;
+    width: 100%;
+    height: 80%;
+}
+
+
+.bigImage:hover {
+    transform: scale(1.6);
+    box-sizing: border-box;
+    box-shadow: 0 0 3px rgba(0,0,0,0.6);
+    -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+.overlay {
+    position: absolute;
+    bottom: 5px;
+    left: 6px;
+    background: rgb(0, 0, 0);
+    background: rgba(240, 52, 52, 0.7);
+    color: #f1f1f1;
+    width: calc(100% - 12px);
+    transition: .5s ease;
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    letter-spacing: 2px;
+    padding: 10px;
+    text-align: center;
+    text-shadow: -1px 0px 3px rgba(0,0,0,1);
+
+}
+
+
+p {
+    font-family: 'Barlow Condensed', sans-serif;
+    color: #FFF;
+}
+
+.navbar {
+    background-image: linear-gradient(#7d0101, #f70202);
+    border-bottom: 4px solid #7d0101;
+    margin-bottom: 30px;
+}
+
+.navbarLoginIcons {
+    font-size: 24px;
+}
+
+.navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show > .nav-link
+{
+    color: #FFF;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #FFF;
+}
+
+/*a.navbar-brand, .navbar-brand*/ 
+.titleHeader {
+    font-family: 'Righteous', cursive;
+    color: #FFFFFF;
+    font-size: 2rem;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+    padding-right:20px;
+}
+
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #ff6a00;
+}
+
+a:hover {
+    color: #ffa666;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    /*margin-bottom: 60px;*/
+    background: url('/img/background.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    /*background-color: #000;*/
+}
+
+.footer {
+    /*position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;*/
+    background-image: linear-gradient(#7d0101, #f70202);
+    color: #FFF;
+    border-top: 4px solid #f70202;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /*margin-top: 80px;*/
+}
+
+.carousel-control-next {
+    filter: invert(100%);
+    justify-content: flex-end;
+    width: 5%;
+    
+}
+
+.carousel-control-prev {
+    filter: invert(100%);
+    justify-content: flex-start;
+    width: 5%;
+    
+}
+
+/* Popup section */
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 5; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+}
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #FEFEFE;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 40%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+    .modal-content h2 {
+        color: white;
+    }
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-image: linear-gradient(#7D0101, #F70202);
+    border-bottom: 4px solid #7D0101;
+    color: white;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.modal-body {
+    padding: 2px 16px;
+    background-color: #000;
+    color: white;
+}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-image: linear-gradient(#7D0101, #F70202);
+    border-bottom: 4px solid #7D0101;
+    color: white;
+    height: 50px;
+}
+
+.modal-body ul{
+   list-style: none;
+}
+
+.modal-body ul li {
+   display: inline;
+   padding:5px;
+       
+}
+
+.modal-body ul li input{
+  margin: 10px;
+}
+
+/* dropdown for cities*/
+#location {
+    color: white;
+    background-color: #ffffff00;
+    border: 0;
+    border-radius: 0;
+}
+
+.option-dropdown {
+    color: black;
+}
+
+
+/* start Manage footer Style On Identity Page*/
+.Admin-Lable{
+    color:red;
+   
+}
+
+.M-Account,.P-Account{
+    height:580px;
+}
+.L-Account{
+    height:667px;
+}
+
+/* End Manage footer Style On Identity Page*/
+
+/* start box for user details*/
+.tilesWrap {
+    padding: 0;
+    margin: 50px auto;
+    list-style: none;
+    text-align: center;
+}
+
+.tilesWrap li {
+    display: inline-block;
+    width: 20%;
+    min-width: 200px;
+    width: 450px;
+    padding: 80px 20px 40px;
+    position: relative;
+    vertical-align: top;
+    margin: 10px;
+    font-family: 'helvetica', san-serif;
+    min-height: 25vh;
+    background: url('/img/background.jpg') no-repeat center center ;
+    text-align: center;
+}
+
+
+.tilesWrap li h3 {
+    font-size: 25px;
+    color: #b7b7b7;
+    margin-bottom: 5px;
+}
+
+      
+
+.tilesWrap li:before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    z-index: -1;
+    background: #fff;
+    transform: skew(2deg, 2deg);
+}
+   
+.tilesWrap li:after {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.tilesWrap li:nth-child(1):before {
+    background: #000000;
+    background: -webkit-linear-gradient(to right, #7d0101, #f70202);
+    background: linear-gradient(to right, #ff6a00, #7d0101);
+}
+
+/* End box for user details*/
+
+/* start Manag buttons on User Details*/
+.PD-Account{
+    margin-top : 30px;
+    margin-bottom:10px;
+}
+
+.D-button {
+    margin-right:4px;
+}
+.U-button {
+    margin-left: 4px;
+}
+.DPD-Accout{
+color:black;
+}
+#delete-user{
+    height:482px;
+}
+
+/* End Manag buttons on User Details*/
+
+/* start Manag buttons on Customer Booking Details*/
+.CM-button-postion {
+    display: flex;
+    justify-content: center
+}
+
+.button-bottom {
+    align-self: flex-end
+}
+
+/* End Manag buttons on Customer Booking Details*/

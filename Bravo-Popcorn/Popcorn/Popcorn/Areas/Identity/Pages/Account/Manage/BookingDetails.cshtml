@@ -1,0 +1,121 @@
+﻿@page
+@model Popcorn.Areas.Identity.Pages.Account.Manage.BookingDetails
+@{
+}
+
+
+
+
+@if (Model.Tickets.Any())
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h1>Booking Details</h1>
+                <br />
+
+
+                <h3> Ticket Reserved </h3>
+                @foreach (var item in Model.Tickets)
+                {
+                    @*@if (item.Shows.date > DateTime.Now && item.TicketsStatus == "Reserved" ||
+                       item.Shows.date > DateTime.Now && item.TicketsStatus == "Selected")*@
+
+                        @if (item.TicketsStatus == "Reserved" || item.TicketsStatus == "Selected")
+                        {
+                            <div class="alert alert-warning mb-3" style="
+                                            border-top: dotted 7px black;
+                                            border-bottom: dotted 7px black;">
+                                <form method="post">
+
+                                    <input type="hidden" name="id" value="@item.Id" />
+
+                                    <h3>@item.TicketNumber</h3>
+                                    <h4>Ticket: @item.Shows.movie.Title</h4>
+
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <p class="text-dark">
+
+                                                This movie is played at <em>@item.Shows.saloon.Name</em> <br />
+                                                <strong>City:</strong> @item.Shows.cinema.city.name <br />
+                                                <strong>Row:</strong> <span class="text-danger mr-sm-3"> @item.SelectedRow</span>
+                                                <strong>Seat:</strong><span class="text-danger"> @item.SelectedCol</span> <br />
+                                                <strong>Price:</strong><span class="text-success"> @item.Shows.Price:-</span>  <br />
+                                                <strong>Date:</strong> @item.Shows.date.ToString("yyyy/MM/dd HH:mm") <br />
+                                                <strong>Tackit State:</strong> @item.TicketsStatus<br />
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Delete</button>
+                                </form>
+                            </div>
+                        }
+                    }
+
+                <hr style="background-color:#ff6a00" />
+                <h3>Ticket Purchased </h3>
+                @foreach (var item in Model.Tickets)
+                {
+                    @if (item.Shows.date > DateTime.Now && item.TicketsStatus == "Paid")
+                    {
+                        <div class="alert alert-warning mb-3" style="
+                                            border-top: dotted 7px black;
+                                            border-bottom: dotted 7px black;">
+                            <h3>@item.TicketNumber</h3>
+                            <h4>Ticket: @item.Shows.movie.Title</h4>
+
+                            <p class="text-dark">
+
+                                This movie is played at <em>@item.Shows.saloon.Name</em> <br />
+                                <strong>City:</strong> @item.Shows.cinema.city.name <br />
+                                <strong>Row:</strong> <span class="text-danger  mr-sm-3"> @item.SelectedRow</span>
+                                <strong>Seat:</strong><span class="text-danger"> @item.SelectedCol</span> <br />
+                                <strong>Price:</strong><span class="text-success"> @item.Shows.Price:-</span>  <br />
+                                <strong>Date:</strong> @item.Shows.date.ToString("yyyy/MM/dd HH:mm") <br />
+                                <strong>Tackit State:</strong> @item.TicketsStatus<br />
+                            </p>
+
+
+                        </div>
+                    }
+                }
+
+                <hr style="background-color:#ff6a00" />
+                <h3>Ticket History</h3>
+
+                @foreach (var item in Model.Tickets)
+                {
+                    @if (item.Shows.date < DateTime.Now)
+                    {
+                        <div class="alert alert-warning mb-3" style="
+                                            border-top: dotted 7px black;
+                                            border-bottom: dotted 7px black;">
+                            <h3>@item.TicketNumber</h3>
+                            <h4>Ticket: @item.Shows.movie.Title</h4>
+
+                            <p class="text-dark">
+
+                                This movie is played at <em>@item.Shows.saloon.Name</em> <br />
+                                <strong>City:</strong> @item.Shows.cinema.city.name <br />
+                                <strong>Row:</strong> <span class="text-danger  mr-sm-3"> @item.SelectedRow</span>
+                                <strong>Seat:</strong><span class="text-danger"> @item.SelectedCol</span> <br />
+                                <strong>Price:</strong><span class="text-success"> @item.Shows.Price:-</span>  <br />
+                                <strong>Date:</strong> @item.Shows.date.ToString("yyyy/MM/dd HH:mm") <br />
+                                <strong>Tackit State:</strong> @item.TicketsStatus<br />
+                            </p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    }
+    else
+    {
+            <div class="col">
+
+                <h1 class="text-danger">You don't have any ticket</h1>
+
+            </div>        
+    }

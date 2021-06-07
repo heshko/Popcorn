@@ -1,0 +1,65 @@
+﻿@model List<MovieModel>
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<h1>Movies</h1>
+
+
+@foreach (var Movie in Model)
+{
+
+    <div class="row mb-4 pt-4" style="border-top:1px solid #808080;">
+        <div class="col-2 overlayContainer movie" style="opacity:initial;">
+            <img src="@Movie.MoviePoster" class="img-thumbnail boxShadow" alt="@Movie.Title">
+        </div>
+        <div class="col-10">
+            <h3>@Movie.Title</h3>
+            <p style="color:#8d8d8d;">
+
+                @if (Movie.GenresInMovies.Count > 0)
+                {
+                    int maxItem = Movie.GenresInMovies.Count;
+                    int currentItem = 0;
+
+                    <i class="far fa-folder" style="color:#4d4d4d;"></i>
+
+                    foreach (var genre in Movie.GenresInMovies)
+                    {
+                        currentItem++;
+                        <a href="@Url.Action("Genres","Movie")#@genre.GenreModel.Description">
+                        @genre.GenreModel.Description
+                        </a>
+
+                        if (maxItem > currentItem)
+                        {
+                            <text>, </text>
+                        }
+                    }
+                    <text>&nbsp;&nbsp;</text>
+
+                }
+
+
+
+                <i class="far fa-clock" style="color:#4d4d4d;"></i> @Movie.PlayTimeLength &nbsp;&nbsp;
+                <i class="fas fa-calendar-alt" style="color:#4d4d4d;"></i> @Movie.ReleaseDate
+            </p>
+            <p>@Movie.Description</p>
+
+            <a href="/Movie/MovieDetails/@Movie.Id" class="btn btn-primary float-right">More Details</a>
+
+            @if (Movie.ReleaseDate > DateTime.Now)
+            {
+                <a class="btn btn-danger float-right mr-2" style="color:#fff;">Release: @Movie.ReleaseDate.ToString("dd")/@Movie.ReleaseDate.ToString("MM")</a>
+            }
+
+        </div>
+    </div>
+}
+
+
+
+
+
+

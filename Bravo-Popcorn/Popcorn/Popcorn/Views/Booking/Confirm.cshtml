@@ -1,0 +1,230 @@
+﻿@model TicketViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Movies";
+    var data = ViewBag.ActiveFilters;
+    string ticketNumbers = "";
+
+    var user = UserManager.GetUserAsync(User).Result;
+    int bookedSeats = Model.Ticket.Where(x => x.CustomerId == user.Id && x.TicketsStatus == "Selected").Count();
+    int bookingSum = Model.Show.Price * bookedSeats;
+}
+@section stripe{
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script>
+
+        var stripe = Stripe('pk_test_XP3g0ffde01zTRstbyfSYoD000GkYiU3Cg');
+        var elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        var style = {
+            base: {
+                // Add your base input styles here. For example:
+                fontSize: '16px',
+                color: '#e9ecef',
+            },
+        };
+
+        // Create an instance of the card Element.
+        var card = elements.create('card', { style: style });
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element');
+
+
+        // Create a token or display an error when the form is submitted.
+        var form = document.getElementById('payment-form');
+
+        form.addEventListener('submit', onSubmit);
+
+        function onSubmit(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function (result) {
+                if (result.error) {
+                    // Inform the customer that there was an error.
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Send the token to your server.
+                    stripeTokenHandler(result.token);
+                }
+            });
+        };
+
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            // Submit the form
+            form.submit();
+        }
+
+        function payNow() {
+
+            document.getElementById("card-element").style.visibility = "visible";
+
+            form.addEventListener('submit', onSubmit);
+        }
+
+        function reserve() {
+
+            document.getElementById("card-element").style.visibility = "hidden";
+
+            form.removeEventListener('submit', onSubmit);
+        }
+
+    </script>
+}
+    
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+
+            <div class="p-2 movieScreen">
+                Screen
+            </div>
+
+            <br />
+            <div class="text-center">
+
+                <input type="hidden" name="id" value="@Model.Show.id" />
+
+                @for (int i = 1; i <= Model.Show.saloon.Rows; i++)
+                {
+                    <div class="m-3 p-1">
+
+                        @for (int j = 1; j <= Model.Show.saloon.Columns; j++)
+                        {
+
+                            int seatSelected = Model.Ticket.Count(item => item.SelectedRow == i && item.SelectedCol == j);
+                            int userSeatSelected = Model.Ticket.Count(
+                                                                    item => item.SelectedRow == i && item.SelectedCol == j &&
+                                                                    item.CustomerId == user.Id && item.TicketsStatus == "Selected"
+                                                                    );
+
+                            <div class="d-inline">
+                                @if (seatSelected == 0)
+                                {
+                                    <label class="containerSeats">
+                                        <input type="checkbox" disabled>
+                                        <span class="checkmark" style="background-color:#808080;"></span>
+                                    </label>
+                                }
+                                else if (userSeatSelected > 0)
+                                {
+                                    <label class="containerSeats">
+                                        <input type="checkbox" disabled>
+                                        <span class="checkmark" style="background-color:orange;"></span>
+                                    </label>
+                                }
+                                else
+                                {
+                                    <label class="containerSeats">
+                                        <input type="checkbox" disabled>
+                                        <span class="checkmark" style="background-color:red;"></span>
+                                    </label>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <br />
+            <p class="pl-3" style="border-top: 1px solid #8d8d8d;padding-top:20px;">
+                <strong><span style="color:greenyellow;">@bookedSeats</span> ticket(s) selected:</strong><br />
+                <strong>Total Cost: <span style="color:greenyellow;">@bookingSum:-</span></strong><br />
+            </p>
+        </div>
+
+        <div class="col-sm">
+            <h1>Complete Your booking</h1>
+            <p>
+                To continue your booking, controll your selected seats and choose if you want to reserv or pay them.
+            </p>
+
+            @foreach (var item in Model.Ticket.Where(x => x.CustomerId == user.Id && x.TicketsStatus == "Selected"))
+            { 
+                <div class="alert alert-warning mb-3" style="
+                                            border-top: dotted 8px black;
+                                            border-bottom: dotted 8px black;">
+
+                    <div class="row">
+                        <div class="text-dark col-9">
+                            <h5>@Model.Show.movie.Title</h5>
+                        </div>
+                        <div class="col-3 text-right">
+                            <p class="text-dark">@Model.Show.date.ToShortDateString()</p>
+                        </div>
+                    </div>
+
+                    <p class="text-dark">
+                        Shows in <em>@Model.Show.cinema.city.name</em> at <em>@Model.Show.cinema.name, @Model.Show.saloon.Name</em> <br />
+                    </p>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-3 text-dark" style="text-align:center;">
+                                <strong>Row</strong><br />
+                                <h4>@item.SelectedRow</h4>
+                            </div>
+                            <div class="col-3 text-dark" style="text-align:center;">
+                                <strong>Seat</strong><br />
+                                <h4>@item.SelectedCol</h4>
+                            </div>
+                            <div class="col-3 text-dark" style="text-align:center;">
+                                <strong>Price</strong><br />
+                                <h4 style="color:green;">@Model.Show.Price:-</h4>
+                            </div>
+                            <div class="col-3 text-dark" style="text-align:center;">
+                                <strong>Starts</strong><br />
+                                <h4>@Model.Show.date.ToString("HH:mm")</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                ticketNumbers = item.TicketNumber + " " + ticketNumbers;
+             }
+
+
+
+
+            @if (bookedSeats > 0)
+            {
+                <form action="/Booking/Submit/" method="post" id="payment-form">
+
+                    <input type="hidden" name="showId" value="@Model.Show.id" />
+                    <input type="hidden" name="ticketNumbers" value="@ticketNumbers" />
+
+                    <p>
+                        <input type="radio" value="true" name="action" onchange="payNow()" checked /> Purchase Tickets<br />
+                        <input type="radio" value="false" name="action" onchange="reserve()" /> Reserv Tickets<br />
+                    </p>
+
+                    <div id="card-element">
+                        <!-- A Stripe Element will be inserted here. -->
+                    </div>
+                    <!-- Used to display form errors. -->
+                    <div id="card-errors" role="alert"></div>
+
+                    <br />
+
+                    <button class="btn btn-danger">Complete Booking</button>
+
+                </form>
+            }
+
+        </div>
+    </div>
+</div>

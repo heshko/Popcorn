@@ -1,0 +1,75 @@
+﻿@model MovieModel
+@using Microsoft.AspNetCore.Http
+@using Popcorn.Models;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "ModelDetails";
+    var helleantizi = HttpContextAccessor.HttpContext.Session.GetString("city");
+    var data = ViewBag.FilterSearch;
+}
+
+    <div class="container">
+        <div class="row">
+            <div class="embed-responsive embed-responsive-21by9 mb-4">
+                <iframe class="embed-responsive-item" src="@Model.Trailer" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@Model.MoviePoster" class="img-fluid img-thumbnail" alt="@Model.Title">
+            </div>
+            <div class="col-md-8">
+
+                @if (Model.ReleaseDate > DateTime.Now)
+                {
+                    <a class="btn btn-danger float-right" style="color:#fff;">Release: @Model.ReleaseDate.ToString("dd")/@Model.ReleaseDate.ToString("MM")</a>
+                }
+
+                <h2>@Model.Title</h2>
+                <p style="color:#8d8d8d;">
+
+                    @if (Model.GenresInMovies.Count > 0)
+                    {
+                        int maxItem = Model.GenresInMovies.Count;
+                        int currentItem = 0;
+
+                        <i class="far fa-folder" style="color:#4d4d4d;"></i>
+
+                        foreach (var genre in Model.GenresInMovies)
+                        {
+                            currentItem++;
+                            <a href="@Url.Action("Genres", "Movie")#@genre.GenreModel.Description">
+                                @genre.GenreModel.Description
+                            </a>
+
+                            if (maxItem > currentItem)
+                            {
+                                <text>, </text>
+                            }
+                        }
+                        <text>&nbsp;&nbsp;</text>
+
+                    }
+                    <i class="far fa-clock" style="color:#4d4d4d;"></i> @Model.PlayTimeLength &nbsp;&nbsp;
+                    <i class="fas fa-calendar-alt" style="color:#4d4d4d;"></i> @Model.ReleaseDate
+                </p>
+
+                <br />
+                <p>@Model.Description</p>
+
+                <br /><br />
+                <p style="color:#8d8d8d;"><i class="fas fa-street-view" style="color:#4d4d4d;"></i> <strong>Director:</strong> @Model.Director</p>
+                <p style="color:#8d8d8d;"><i class="fas fa-users" style="color:#4d4d4d;"></i> <strong>Actors:</strong> @Model.Actors</p>
+
+            </div>
+        </div>
+
+
+        <br /><br />
+        @await Component.InvokeAsync("ShowsList", new
+        {
+            location = helleantizi,
+            searchMovie = Model.Title
+        })
+    </div>

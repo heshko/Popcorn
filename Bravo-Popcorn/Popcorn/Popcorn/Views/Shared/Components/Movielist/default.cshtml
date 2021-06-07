@@ -1,0 +1,39 @@
+﻿@model List<MovieModel>
+@{
+    int isUpcoming = Model.Where(x => x.ReleaseDate > DateTime.Now).Count();
+    string returnH1 = isUpcoming > 0 ? "Upcoming movies" : "Latest movies";
+}
+
+<br />
+<br />
+<h1>@returnH1</h1>
+<div class="container">
+    <div class="row">
+        @{
+            if (Model.Count() == 0)
+            {
+                <p>There are no upcoming movies</p>
+            }
+
+            @foreach (var item in Model)
+            {
+                <div class="col-6 col-md-3">
+                    <div class="overlayContainer movie">
+                        <a href="/Movie/MovieDetails/@item.Id">
+                            <img src="@item.MoviePoster" alt="@item.Title" class="img-fluid img-thumbnail boxShadow">
+                        </a>
+                        @if (@item.ReleaseDate > DateTime.Now)
+                        {
+                            <div class="overlay">
+                                Release: @item.ReleaseDate.ToString("dd")/@item.ReleaseDate.ToString("MM")
+                            </div>
+                            }            
+                    </div>
+                    <h5 class="pt-2">@item.Title</h5>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+

@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+
+    ViewData["Title"] = "Home Page";
+
+    // Fetch City from Cookie
+    var helleantizi = HttpContextAccessor.HttpContext.Session.GetString("city");
+
+    // Render Partial View from _Hero
+    Html.RenderPartial("_Hero");
+
+}
+
+@*Return List of Shows*@
+@await Component.InvokeAsync("ShowsFilter", new { location = helleantizi })
+
+
+@*Return Latest Movies*@
+@await Component.InvokeAsync("Movielist", new { isReleased = true })
+
+@*Return Upcomming Movies*@
+@await Component.InvokeAsync("Movielist", new { isReleased = false })
+

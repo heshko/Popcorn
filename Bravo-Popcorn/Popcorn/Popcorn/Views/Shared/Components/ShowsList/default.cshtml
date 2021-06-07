@@ -1,0 +1,89 @@
+﻿@model List<ShowModel>
+@using Microsoft.AspNetCore.Http
+@using Popcorn.Models;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var helleantizi = HttpContextAccessor.HttpContext.Session.GetString("city");    
+    var data = ViewBag.FilterSearch;
+    DateTime selectedDate = DateTime.Parse(data.DateOfShow);
+    var allShows = Model.Count();
+    var activeShowsToday = Model.Where(x => x.date.Hour > DateTime.Now.Hour).Count();
+    var displayShowsOfToday = selectedDate.ToShortDateString() == DateTime.Now.ToShortDateString() ? activeShowsToday : allShows;
+}
+
+@if (helleantizi == null)
+{
+    <h1>No city selected</h1>
+    <p>You have to select a city to be able to view shows and book movies.</p>
+}
+else if (allShows == 0)
+{
+    <h1>No shows</h1>
+    <p>There are no shows for your filtered search.</p>
+}
+else
+{
+    <h2>Shows in @helleantizi </h2>
+    <p>There are <strong>@displayShowsOfToday</strong> shows playing right now in @helleantizi.</p>
+
+    <div class="container pb-4" style="border-bottom: 1px solid #808080;">
+
+        @foreach (var item in Model)
+        {
+
+            if (item.date.Hour > DateTime.Now.Hour && selectedDate.ToShortDateString() == DateTime.Now.ToShortDateString()
+                || @selectedDate.ToShortDateString() != @DateTime.Now.ToShortDateString()
+                )
+            {
+                int totalSeats = item.saloon.Columns * item.saloon.Rows;
+
+                <div class="row mt-4 pt-4" style="border-top: 1px solid #808080;">
+                    <div class="col-2">
+                        <a href="/Movie/MovieDetails/@item.movie.Id">
+                            <img src="@item.movie.MoviePoster" alt="@item.movie.Title" class="img-fluid img-thumbnail boxShadow" style="width:100%;">
+                        </a>
+                    </div>
+                    <div class="col-10">
+                        <h2>@item.date.ToString("HH:mm")</h2>
+                        <h2>@item.movie.Title</h2>
+
+                        <p>
+                            <i class="fas fa-video" style="color:orange;"></i> <strong>Cinema: </strong>@item.cinema.name &nbsp;
+                            <i class="fas fa-chair" style="color:orange;"></i> <strong>Saloon: </strong>@item.saloon.Name &nbsp;
+                            <i class="fas fa-ticket-alt" style="color:orange;"></i> <strong>Tickets: </strong>@totalSeats
+                            <br /><br />
+
+                            <strong>About:</strong> <em>@item.movie.Description</em>
+                        </p>
+
+                        <form method="post" action="/Booking/Index/">
+                            <div class="float-right">
+                                <div class="d-inline-block mr-2">
+                                    <input type="hidden" name="id" value="@item.id" />
+                                    <input type="hidden" name="dateOfShow" value="@data.DateOfShow" />
+                                    <input type="submit" name="submit" value="Book" class="btn btn-primary" />
+                                </div>
+                                <div class="d-inline-block">
+                                    <a href="/Movie/MovieDetails/@item.movie.Id" class="btn btn-primary" style="color:#fff;">Details</a>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+}
+
+
+
+
+
+
+
+
+
+
+
